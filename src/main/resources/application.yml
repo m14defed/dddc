@@ -1,0 +1,10 @@
+fisco:
+  crptoMaterial:
+    certPath: ./conf
+  network:
+     nodeList: 192.168.47.10:20201
+  account:
+    accountAddress: "0x640da200d01b88a3f68233edd26d0db6a79b23ef"
+    accountFilePath: D:\JavaPrejeck\studySDK\sun\src\main\resources\account\sunzh_key_0x640da200d01b88a3f68233edd26d0db6a79b23ef.pem
+
+add: "0x358c9b95d52b69c07e8428ccfffc44e5a935b5ed"
