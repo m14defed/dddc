@@ -3,9 +3,9 @@ package com.sunzh.sun.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.sunzh.sun.pojo.OrdorBO;
 import com.sunzh.sun.pojo.OrdorBchuanru;
-import com.sunzh.sun.pojo.People;
+import com.sunzh.sun.pojo.UserInfoBO;
 import com.sunzh.sun.raw.Dididache;
-import com.sunzh.sun.util.NewAccout;
+import com.sunzh.sun.util.AccoutUtil;
 import com.sunzh.sun.util.Result;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple6;
@@ -137,9 +137,9 @@ public class MyController {
 
     //增加司机
     @RequestMapping("/addDriver")
-    public Result addDriver(@RequestBody People people){
+    public Result addDriver(@RequestBody UserInfoBO people){
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
-        String s = NewAccout.saveAccountWithPem(people.getAccount());
+        String s = AccoutUtil.saveAccountWithPem(people.getAccount());
         TransactionReceipt transactionReceipt = dididache.addDriver(s, people.getTokens());
         if (transactionReceipt.isStatusOK()==true){
             System.out.println(Result.Success());
@@ -151,9 +151,9 @@ public class MyController {
     }
     //增加乘客
     @RequestMapping("/addPassenger")
-    public Result addPassenger(@RequestBody People people){
+    public Result addPassenger(@RequestBody UserInfoBO people){
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
-        String s = NewAccout.saveAccountWithPem(people.getAccount());
+        String s = AccoutUtil.saveAccountWithPem(people.getAccount());
         TransactionReceipt transactionReceipt = dididache.addPassenger(s, people.getTokens());
         if (transactionReceipt.isStatusOK()==true){
             System.out.println(Result.Success());
@@ -193,7 +193,7 @@ public class MyController {
             Tuple2<BigInteger, List<String>> people = dididache.getPeople(BigInteger.valueOf(0));
             BigInteger value1 = people.getValue1();
             List<String> value2 = people.getValue2();
-            People people1 = new People();
+            UserInfoBO people1 = new UserInfoBO();
 
             people1.setTokens(value1);
             people1.setIds(value2);
@@ -213,7 +213,7 @@ public class MyController {
             Tuple2<BigInteger, List<String>> people = dididache.getPeople(BigInteger.valueOf(1));
             BigInteger value1 = people.getValue1();
             List<String> value2 = people.getValue2();
-            People people1 = new People();
+            UserInfoBO people1 = new UserInfoBO();
             people1.setTokens(value1);
             people1.setIds(value2);
             JSONObject outjson = new JSONObject();

@@ -1,15 +1,28 @@
 package com.sunzh.sun.util;
 
+import com.sunzh.sun.raw.Dididache;
+import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.model.CryptoType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class NewAccout {
+@Component
+public class AccoutUtil {
+    @Autowired
+    Client  client;
+    @Autowired
+    CryptoKeyPair cryptoKeyPair;
+    @Value("${add}")
+    private  String contractAddress;
     public static String saveAccountWithPem(String name) {
 
         // 以pem的格式保存账户文件到pemFilePath路径
@@ -35,5 +48,19 @@ public class NewAccout {
 
         cryptoKeyPair.storeKeyPairWithPem(filePath);
         return accountAddress;
+    }
+    public  Dididache getDididache(String accout){
+        CryptoSuite cryptoSuite = client.getCryptoSuite();
+        // 加载pem账户文件
+        String myaccout = "D:\\JavaPrejeck\\studySDK\\sun\\src\\main\\resources\\account\\"+accout+".pem";
+        CryptoSuite cryptoSuite1 = cryptoSuite;
+        cryptoSuite1.loadAccount("pem", myaccout, null);
+        CryptoKeyPair cryptoKeyPair1 = cryptoSuite1.getCryptoKeyPair();
+        Dididache dididache = Dididache.load(contractAddress,client,cryptoKeyPair1);
+        return dididache;
+    }
+    public  Dididache getDididache(){
+        Dididache dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
+        return dididache;
     }
 }
