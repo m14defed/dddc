@@ -88,17 +88,17 @@ public class MyController {
 
         TransactionReceipt transactionReceipt = dididache.addOrder(uuid, ordorBO.getOrigin(), ordorBO.getEnd());
 
-        System.out.println(transactionReceipt.toString());
+
         if (transactionReceipt.isStatusOK()==true){
             System.out.println(Result.Success());
-           return  Result.Success();
+           return  Result.Success(transactionReceipt.toString());
 
         }
-        return  Result.Eorr("SDA");
+        return  Result.Eorr(transactionReceipt.toString());
     }
     //接收
     @RequestMapping("/reception")
-    public String reception(String id ,String accout ){
+    public Result reception(String id ,String accout ){
         // 通过client获取CryptoSuite对象
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         String myaccout = "D:\\JavaPrejeck\\studySDK\\sun\\src\\main\\resources\\account\\"+accout+".pem";
@@ -107,12 +107,18 @@ public class MyController {
         cryptoSuite1.loadAccount("pem",myaccout , null);
         CryptoKeyPair cryptoKeyPair1 = cryptoSuite1.getCryptoKeyPair();
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair1);
-        dididache.reception(id);
-        return "ok";
+        TransactionReceipt reception = dididache.reception(id);
+        if (reception.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(reception.toString());
+
+        }
+        return  Result.Eorr(reception.toString());
     }
+
     //提交
     @RequestMapping("/complete")
-    public String complete(String id ,String accout){
+    public Result complete(String id ,String accout){
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         // 加载pem账户文件
         String myaccout = "D:\\JavaPrejeck\\studySDK\\sun\\src\\main\\resources\\account\\"+accout+".pem";
@@ -120,30 +126,44 @@ public class MyController {
         cryptoSuite1.loadAccount("pem", myaccout, null);
         CryptoKeyPair cryptoKeyPair1 = cryptoSuite1.getCryptoKeyPair();
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair1);
-        dididache.complete(id);
-        return "ok";
+        TransactionReceipt complete = dididache.complete(id);
+        if (complete.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(complete.toString());
+
+        }
+        return  Result.Eorr(complete.toString());
     }
+
     //增加司机
     @RequestMapping("/addDriver")
-    public String addDriver(@RequestBody People people){
+    public Result addDriver(@RequestBody People people){
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
         String s = NewAccout.saveAccountWithPem(people.getAccount());
         TransactionReceipt transactionReceipt = dididache.addDriver(s, people.getTokens());
+        if (transactionReceipt.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(transactionReceipt.toString());
 
-        return "ok";
+        }
+        return  Result.Eorr(transactionReceipt.toString());
+
     }
     //增加乘客
     @RequestMapping("/addPassenger")
-    public String addPassenger(@RequestBody People people){
+    public Result addPassenger(@RequestBody People people){
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
         String s = NewAccout.saveAccountWithPem(people.getAccount());
         TransactionReceipt transactionReceipt = dididache.addPassenger(s, people.getTokens());
-        System.out.println(s);
-        System.out.println(transactionReceipt);
-        return "ok";
+        if (transactionReceipt.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(transactionReceipt.toString());
+
+        }
+        return  Result.Eorr(transactionReceipt.toString());
     }
     @RequestMapping("/getOrder")
-    public JSONObject getOrder(String id) throws ContractException {
+    public Result getOrder(String id) throws ContractException {
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair);
         Tuple6<String, String, String, String, BigInteger, BigInteger> order = dididache.getOrder(id);
         OrdorBO ordorBO = new OrdorBO();
@@ -155,12 +175,12 @@ public class MyController {
         ordorBO.setStatus(order.getValue5());
         ordorBO.setPrice(order.getValue6());
         JSONObject outjson = new JSONObject();
-        outjson.put("qian",ordorBO);
+        outjson.put("dingdanxinxi",ordorBO);
 
-        return outjson;
+        return Result.Success(outjson);
     }
     @RequestMapping("/getUserinfo")
-    public JSONObject getUserinfo(Integer types, String accout) throws ContractException {
+    public Result getUserinfo(Integer types, String accout) throws ContractException {
         if (types==0){
             // 通过client获取CryptoSuite对象
             CryptoSuite cryptoSuite = client.getCryptoSuite();
@@ -179,7 +199,7 @@ public class MyController {
             people1.setIds(value2);
             JSONObject outjson = new JSONObject();
             outjson.put("siji",people1);
-            return outjson;
+            return Result.Success(outjson);
 
         }else {
             // 通过client获取CryptoSuite对象
@@ -198,7 +218,7 @@ public class MyController {
             people1.setIds(value2);
             JSONObject outjson = new JSONObject();
             outjson.put("chengke",people1);
-            return outjson;
+            return Result.Success(outjson);
         }
 
     }
@@ -207,7 +227,7 @@ public class MyController {
 *
 * */
     @RequestMapping("/recharge")
-    public String recharge(BigInteger qian,String accout){
+    public Result recharge(BigInteger qian,String accout){
         // 通过client获取CryptoSuite对象
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         String myaccout = "D:\\JavaPrejeck\\studySDK\\sun\\src\\main\\resources\\account\\"+accout+".pem";
@@ -216,15 +236,22 @@ public class MyController {
         cryptoSuite1.loadAccount("pem",myaccout, null);
         CryptoKeyPair cryptoKeyPair1 = cryptoSuite1.getCryptoKeyPair();
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair1);
-        dididache.recharge(qian);
-        return "ok";
+        TransactionReceipt recharge = dididache.recharge(qian);
+
+        if (recharge.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(recharge.toString());
+
+        }
+        return  Result.Eorr(recharge.toString());
+
     }
     /*
     * 车主提钱接口
     *
     * */
     @RequestMapping("/deposit")
-    public String deposit(BigInteger qian,String accout){
+    public Result deposit(BigInteger qian,String accout){
         // 通过client获取CryptoSuite对象
         CryptoSuite cryptoSuite = client.getCryptoSuite();
         String myaccout = "D:\\JavaPrejeck\\studySDK\\sun\\src\\main\\resources\\account\\"+accout+".pem";
@@ -233,8 +260,13 @@ public class MyController {
         cryptoSuite1.loadAccount("pem",myaccout, null);
         CryptoKeyPair cryptoKeyPair1 = cryptoSuite1.getCryptoKeyPair();
         Dididache  dididache = Dididache.load(contractAddress,client,cryptoKeyPair1);
-        dididache.deposit(qian);
-        return "ok";
+        TransactionReceipt deposit = dididache.deposit(qian);
+        if (deposit.isStatusOK()==true){
+            System.out.println(Result.Success());
+            return  Result.Success(deposit.toString());
+
+        }
+        return  Result.Eorr(deposit.toString());
     }
 
 }
