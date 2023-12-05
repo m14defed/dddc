@@ -9,4 +9,5 @@ public interface UserService {
     Boolean register(LoginBO loginBO);
     String login(LoginBO loginBO);
     JSONObject getUserInfo(String username, Integer types) throws ContractException;
+    JSONObject getOrder(String id) throws ContractException;
 }

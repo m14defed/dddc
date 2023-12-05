@@ -7,7 +7,6 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.model.CryptoType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Component
+//私人工具包
 public class AccoutUtil {
     @Autowired
     Client  client;

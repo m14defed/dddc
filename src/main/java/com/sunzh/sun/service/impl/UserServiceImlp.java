@@ -2,13 +2,16 @@ package com.sunzh.sun.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sunzh.sun.pojo.LoginBO;
+import com.sunzh.sun.pojo.OrdorBO;
 import com.sunzh.sun.pojo.UserInfoBO;
 import com.sunzh.sun.raw.Dididache;
 import com.sunzh.sun.service.UserService;
 import com.sunzh.sun.util.AccoutUtil;
 import com.sunzh.sun.util.Result;
 import com.sunzh.sun.util.TokenUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple2;
+import org.fisco.bcos.sdk.abi.datatypes.generated.tuples.generated.Tuple6;
 import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 
@@ -22,6 +25,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class UserServiceImlp implements UserService {
     @Autowired
     AccoutUtil accoutUtil;
@@ -80,5 +84,23 @@ public class UserServiceImlp implements UserService {
             outjson.put("chengke",people1);
             return outjson;
         }
+    }
+
+    @Override
+    public JSONObject getOrder(String id) throws ContractException {
+        Dididache dididache = accoutUtil.getDididache();
+        Tuple6<String, String, String, String, BigInteger, BigInteger> order = dididache.getOrder(id);
+        OrdorBO ordorBO = new OrdorBO();
+        ordorBO.setId(id);
+        ordorBO.setOrigin(order.getValue1());
+        ordorBO.setEnd(order.getValue2());
+        ordorBO.setAddress1(order.getValue3());
+        ordorBO.setAddress2(order.getValue4());
+        ordorBO.setStatus(order.getValue5());
+        ordorBO.setPrice(order.getValue6());
+        JSONObject outjson = new JSONObject();
+        outjson.put("dingdanxinxi",ordorBO);
+        log.info(outjson.toString());
+        return outjson;
     }
 }

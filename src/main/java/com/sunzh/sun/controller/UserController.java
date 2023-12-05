@@ -59,4 +59,9 @@ public class UserController {
         JSONObject userInfo = userService.getUserInfo(username, type);
         return Result.Success(userInfo);
     }
+    @GetMapping("/getOrder")
+    public Result getOrder(String id) throws ContractException {
+        JSONObject order = userService.getOrder(id);
+        return Result.Success(order);
+    }
 }
